@@ -9,12 +9,17 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { JobService } from './job.service';
 import { JobExistPipe } from './pipe/job-exist.pipe';
 import { Job } from './entities/job.entity';
 import { CreateJobDto } from './dto/create-job.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { UserRole } from 'src/users/entities/user.entity';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('job')
 export class JobController {
@@ -33,21 +38,29 @@ export class JobController {
     return job;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async createJob(@Body() jobData: CreateJobDto): Promise<Job> {
-    return this.jobService.createJob(jobData);
+  async createJob(
+    @Body() jobData: CreateJobDto,
+    @CurrentUser() user: any,
+  ): Promise<Job> {
+    return this.jobService.createJob(jobData, user);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   async updateJob(
     @Param('id', ParseIntPipe, JobExistPipe) id: number,
     @Body() jobData: CreateJobDto,
+    @CurrentUser() user: any,
   ): Promise<Job> {
-    return this.jobService.updateJob(id, jobData);
+    return this.jobService.updateJob(id, jobData, user);
   }
 
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteJob(

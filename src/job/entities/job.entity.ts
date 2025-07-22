@@ -1,7 +1,9 @@
+import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -31,6 +33,9 @@ export class Job {
 
   @Column()
   salary: number;
+
+  @ManyToOne(() => User, (user) => user.jobs)
+  creator: User;
 
   @CreateDateColumn()
   createdAt: Date;
