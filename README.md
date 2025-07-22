@@ -10,12 +10,8 @@ A scalable web api built with the NestJS framework.
 - [Running the Application](#running-the-application)
 - [Configuration](#configuration)
 - [API Documentation](#api-documentation)
-- [Testing](#testing)
 - [Database](#database)
 - [Environment Variables](#environment-variables)
-- [Docker Support](#docker-support)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Description
 
